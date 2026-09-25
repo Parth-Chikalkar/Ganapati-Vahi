@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import API from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import EntryCard from '../components/EntryCard';
+import EntryModal from '../components/EntryModal';
 import toast from 'react-hot-toast';
 import {
   HiOutlinePlusCircle,
@@ -19,6 +20,7 @@ const BookView = () => {
   const [book, setBook] = useState(null);
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedEntryIndex, setSelectedEntryIndex] = useState(null);
 
   const isOwner = user && book && user._id === (book.owner?._id || book.owner);
 
@@ -53,6 +55,7 @@ const BookView = () => {
     try {
       await API.delete(`/entries/${entryId}`);
       setEntries(entries.filter((e) => e._id !== entryId));
+      setSelectedEntryIndex(null);
       toast.success('Entry deleted');
     } catch (error) {
       toast.error('Failed to delete entry');
@@ -61,6 +64,18 @@ const BookView = () => {
 
   const handleEditEntry = (entryId) => {
     navigate(`/entries/${entryId}/edit`);
+  };
+
+  const handleNextEntry = () => {
+    if (selectedEntryIndex !== null && entries.length > 0) {
+      setSelectedEntryIndex((prev) => (prev + 1) % entries.length);
+    }
+  };
+
+  const handlePrevEntry = () => {
+    if (selectedEntryIndex !== null && entries.length > 0) {
+      setSelectedEntryIndex((prev) => (prev - 1 + entries.length) % entries.length);
+    }
   };
 
   if (loading) {
@@ -154,16 +169,32 @@ const BookView = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 stagger-children">
-          {entries.map((entry) => (
+          {entries.map((entry, index) => (
             <EntryCard
               key={entry._id}
               entry={entry}
               isOwner={isOwner}
               onEdit={handleEditEntry}
               onDelete={handleDeleteEntry}
+              onClick={() => setSelectedEntryIndex(index)}
             />
           ))}
         </div>
+      )}
+
+      {/* Full detail modal for selected entry */}
+      {selectedEntryIndex !== null && entries[selectedEntryIndex] && (
+        <EntryModal
+          entry={entries[selectedEntryIndex]}
+          onClose={() => setSelectedEntryIndex(null)}
+          onEdit={handleEditEntry}
+          onDelete={handleDeleteEntry}
+          isOwner={isOwner}
+          onNext={entries.length > 1 ? handleNextEntry : undefined}
+          onPrev={entries.length > 1 ? handlePrevEntry : undefined}
+          currentIndex={selectedEntryIndex}
+          totalEntries={entries.length}
+        />
       )}
     </div>
   );
