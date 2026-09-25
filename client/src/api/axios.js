@@ -16,17 +16,13 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Handle 401 responses globally
+// Handle 401 responses globally — clear local auth state without force-reloading
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      // Only redirect if not already on auth pages
-      if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup')) {
-        window.location.href = '/login';
-      }
     }
     return Promise.reject(error);
   }

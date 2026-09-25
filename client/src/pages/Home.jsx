@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import API from '../api/axios';
 import BookCard from '../components/BookCard';
+import { useAuth } from '../context/AuthContext';
 import { HiOutlineBookOpen } from 'react-icons/hi';
 
 const Home = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchPublicBooks = async () => {
@@ -46,9 +48,15 @@ const Home = () => {
             Bring that tradition online — preserve your memories, photos, and devotion in a beautiful digital scrapbook.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
-            <Link to="/signup" className="btn-primary text-lg px-8 py-3 no-underline">
-              Start Collecting
-            </Link>
+            {user ? (
+              <Link to="/dashboard" className="btn-primary text-lg px-8 py-3 no-underline">
+                My Scrapbooks
+              </Link>
+            ) : (
+              <Link to="/signup" className="btn-primary text-lg px-8 py-3 no-underline">
+                Start Collecting
+              </Link>
+            )}
             <a href="#explore" className="btn-secondary text-lg px-8 py-3 no-underline">
               Explore Books
             </a>
@@ -81,7 +89,10 @@ const Home = () => {
             <p className="text-ink-muted text-sm">
               Be the first to create and share a collection!
             </p>
-            <Link to="/signup" className="btn-primary mt-4 inline-block no-underline">
+            <Link
+              to={user ? '/create-book' : '/login'}
+              className="btn-primary mt-4 inline-block no-underline"
+            >
               Create a Book
             </Link>
           </div>
