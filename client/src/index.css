@@ -353,3 +353,62 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.95rem;
   }
 }
+
+/* ========================================
+   SHARE MODAL & SHARED BOOK VIEW
+   ======================================== */
+
+/* Share modal */
+.share-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.share-modal::-webkit-scrollbar {
+  width: 4px;
+}
+
+.share-modal::-webkit-scrollbar-thumb {
+  background: var(--color-ink-muted);
+  border-radius: 2px;
+}
+
+/* Share toggle switch */
+.share-toggle-btn {
+  outline: none;
+}
+
+.share-toggle-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255, 153, 51, 0.4);
+}
+
+/* Shared book page — subtle mandala watermark */
+.shared-book-page {
+  position: relative;
+}
+
+.shared-book-page::before {
+  content: '';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.04) 0%,
+    rgba(212, 175, 55, 0.02) 40%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Link copied animation */
+@keyframes linkCopiedPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}

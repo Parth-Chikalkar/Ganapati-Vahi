@@ -31,6 +31,16 @@ const bookSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    shareId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      default: null,
+    },
+    isShareEnabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
