@@ -20,14 +20,14 @@ const uploadFields = upload.fields([
 // Get a single entry by ID (must be before /:bookId to avoid conflict)
 router.get('/single/:id', auth, getEntryById);
 
-// Add entry to a book (protected, with file upload)
-router.post('/:bookId', auth, uploadFields, addEntry);
+// Add entry to a book (protected, with file upload & size validation)
+router.post('/:bookId', auth, uploadFields, upload.validateFileSizes, addEntry);
 
 // Get entries for a book (conditional auth — public books visible to all)
 router.get('/:bookId', optionalAuth, getEntriesByBook);
 
-// Update an entry (protected, with optional file upload)
-router.put('/:id', auth, uploadFields, updateEntry);
+// Update an entry (protected, with optional file upload & size validation)
+router.put('/:id', auth, uploadFields, upload.validateFileSizes, updateEntry);
 
 // Delete an entry (protected)
 router.delete('/:id', auth, deleteEntry);

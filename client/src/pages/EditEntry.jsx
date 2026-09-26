@@ -4,6 +4,9 @@ import API from '../api/axios';
 import toast from 'react-hot-toast';
 import { HiOutlinePhotograph, HiOutlineVideoCamera } from 'react-icons/hi';
 
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB limit
+const MAX_VIDEO_SIZE = 10 * 1024 * 1024; // 10MB limit
+
 const EditEntry = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -22,9 +25,6 @@ const EditEntry = () => {
   useEffect(() => {
     const fetchEntry = async () => {
       try {
-        // We need to find the entry — we'll search through the API
-        // Since there's no direct GET /entries/:id, we get it indirectly
-        // Actually let's add a simple approach: get from the response
         const { data } = await API.get(`/entries/single/${id}`);
         setTitle(data.title);
         setDescription(data.description || '');
@@ -44,6 +44,11 @@ const EditEntry = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > MAX_IMAGE_SIZE) {
+        toast.error('Photo size must be 10MB or less');
+        e.target.value = '';
+        return;
+      }
       setImage(file);
       setImagePreview(URL.createObjectURL(file));
     }
@@ -52,6 +57,11 @@ const EditEntry = () => {
   const handleVideoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > MAX_VIDEO_SIZE) {
+        toast.error('Video size must be 10MB or less');
+        e.target.value = '';
+        return;
+      }
       setVideo(file);
     }
   };
@@ -60,6 +70,15 @@ const EditEntry = () => {
     e.preventDefault();
     if (!title.trim()) {
       toast.error('Please enter a title');
+      return;
+    }
+
+    if (image && image.size > MAX_IMAGE_SIZE) {
+      toast.error('Photo size must be 10MB or less');
+      return;
+    }
+    if (video && video.size > MAX_VIDEO_SIZE) {
+      toast.error('Video size must be 10MB or less');
       return;
     }
 
@@ -76,8 +95,10 @@ const EditEntry = () => {
       await API.put(`/entries/${id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (progressEvent) => {
-          const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          setUploadProgress(percent);
+          if (progressEvent.total) {
+            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(percent);
+          }
         },
       });
       toast.success('Entry updated!');
@@ -114,7 +135,8 @@ const EditEntry = () => {
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="form-input"
+              disabled={submitting}
+              className="form-input disabled:opacity-60 disabled:cursor-not-allowed"
               required
               maxLength={100}
             />
@@ -126,7 +148,8 @@ const EditEntry = () => {
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="form-input min-h-24 resize-y"
+              disabled={submitting}
+              className="form-input min-h-24 resize-y disabled:opacity-60 disabled:cursor-not-allowed"
               maxLength={1000}
               rows={3}
             />
@@ -134,7 +157,7 @@ const EditEntry = () => {
 
           {/* Current image + replace */}
           <div>
-            <label className="form-label">Photo</label>
+            <label className="form-label">Photo (max 10MB)</label>
             {(imagePreview || currentImage) && (
               <img
                 src={imagePreview || currentImage}
@@ -144,17 +167,22 @@ const EditEntry = () => {
             )}
             <label
               htmlFor="image"
-              className="flex items-center justify-center gap-3 border-2 border-dashed border-paper-aged rounded-lg p-4 cursor-pointer hover:border-saffron transition-colors bg-paper/50"
+              className={`flex items-center justify-center gap-3 border-2 border-dashed border-paper-aged rounded-lg p-4 transition-colors bg-paper/50 ${
+                submitting
+                  ? 'opacity-60 cursor-not-allowed pointer-events-none'
+                  : 'cursor-pointer hover:border-saffron'
+              }`}
             >
               <HiOutlinePhotograph className="text-2xl text-ink-muted" />
               <span className="text-ink-muted text-sm">
-                {image ? image.name : 'Click to replace image'}
+                {image ? image.name : 'Click to replace image (max 10MB)'}
               </span>
               <input
                 type="file"
                 id="image"
                 accept="image/jpeg,image/png,image/webp"
                 onChange={handleImageChange}
+                disabled={submitting}
                 className="hidden"
               />
             </label>
@@ -162,7 +190,7 @@ const EditEntry = () => {
 
           {/* Video */}
           <div>
-            <label className="form-label">Video (optional)</label>
+            <label className="form-label">Video (optional — max 10MB)</label>
             {currentVideo && !video && (
               <p className="text-sm text-ink-muted mb-2">
                 Current video: <a href={currentVideo} target="_blank" rel="noopener noreferrer" className="text-saffron">View</a>
@@ -170,32 +198,40 @@ const EditEntry = () => {
             )}
             <label
               htmlFor="video"
-              className="flex items-center justify-center gap-3 border-2 border-dashed border-paper-aged rounded-lg p-4 cursor-pointer hover:border-saffron transition-colors bg-paper/50"
+              className={`flex items-center justify-center gap-3 border-2 border-dashed border-paper-aged rounded-lg p-4 transition-colors bg-paper/50 ${
+                submitting
+                  ? 'opacity-60 cursor-not-allowed pointer-events-none'
+                  : 'cursor-pointer hover:border-saffron'
+              }`}
             >
               <HiOutlineVideoCamera className="text-2xl text-ink-muted" />
               <span className="text-ink-muted text-sm">
-                {video ? video.name : 'Click to replace video'}
+                {video ? video.name : 'Click to replace video (max 10MB)'}
               </span>
               <input
                 type="file"
                 id="video"
                 accept="video/mp4,video/quicktime,video/webm"
                 onChange={handleVideoChange}
+                disabled={submitting}
                 className="hidden"
               />
             </label>
           </div>
 
-          {/* Upload progress */}
-          {submitting && uploadProgress > 0 && (
-            <div className="w-full bg-paper-aged rounded-full h-3 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-300"
-                style={{
-                  width: `${uploadProgress}%`,
-                  background: 'linear-gradient(90deg, #e85d04, #f48c06)',
-                }}
-              ></div>
+          {/* Upload progress bar */}
+          {submitting && (
+            <div className="w-full space-y-1.5 my-2">
+              <div className="flex justify-between text-xs font-subheading text-ink-light">
+                <span>Saving entry & uploading asset...</span>
+                <span className="font-semibold text-maroon">{uploadProgress}%</span>
+              </div>
+              <div className="w-full bg-paper-dark border border-gold/40 rounded-full h-3.5 overflow-hidden p-0.5">
+                <div
+                  className="h-full rounded-full transition-all duration-300 bg-gradient-to-r from-maroon via-saffron to-maroon"
+                  style={{ width: `${Math.max(uploadProgress, 4)}%` }}
+                />
+              </div>
             </div>
           )}
 
@@ -203,14 +239,22 @@ const EditEntry = () => {
             <button
               type="submit"
               disabled={submitting}
-              className="btn-primary flex-1 disabled:opacity-60"
+              className="btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
             >
-              {submitting ? `Saving... ${uploadProgress}%` : 'Save Changes'}
+              {submitting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Saving... {uploadProgress}%</span>
+                </>
+              ) : (
+                'Save Changes'
+              )}
             </button>
             <button
               type="button"
               onClick={() => navigate(`/books/${bookId}`)}
-              className="btn-secondary"
+              disabled={submitting}
+              className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
             >
               Cancel
             </button>

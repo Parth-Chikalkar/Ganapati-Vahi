@@ -17,8 +17,8 @@ router.get('/public', getPublicBooks);
 
 // Protected routes
 router.get('/my', auth, getMyBooks);
-router.post('/', auth, upload.single('thumbnail'), createBook);
-router.put('/:id', auth, upload.single('thumbnail'), updateBook);
+router.post('/', auth, upload.single('thumbnail'), upload.validateFileSizes, createBook);
+router.put('/:id', auth, upload.single('thumbnail'), upload.validateFileSizes, updateBook);
 router.delete('/:id', auth, deleteBook);
 
 // Conditional auth — public books visible to all, private only to owner
