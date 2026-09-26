@@ -9,6 +9,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const bookRoutes = require('./routes/books');
 const entryRoutes = require('./routes/entries');
+const shareRoutes = require('./routes/share');
 
 const app = express();
 
@@ -31,6 +32,7 @@ if (!fs.existsSync(uploadsDir)) {
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/entries', entryRoutes);
+app.use('/api/share', shareRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

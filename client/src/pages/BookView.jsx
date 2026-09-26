@@ -4,12 +4,14 @@ import API from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import EntryCard from '../components/EntryCard';
 import EntryModal from '../components/EntryModal';
+import ShareModal from '../components/ShareModal';
 import toast from 'react-hot-toast';
 import {
   HiOutlinePlusCircle,
   HiOutlinePencil,
   HiOutlineGlobeAlt,
   HiOutlineLockClosed,
+  HiOutlineShare,
   HiArrowLeft,
 } from 'react-icons/hi';
 
@@ -21,6 +23,7 @@ const BookView = () => {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEntryIndex, setSelectedEntryIndex] = useState(null);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const isOwner = user && book && user._id === (book.owner?._id || book.owner);
 
@@ -131,7 +134,14 @@ const BookView = () => {
           </div>
 
           {isOwner && (
-            <div className="flex gap-2 flex-shrink-0">
+            <div className="flex gap-2 flex-shrink-0 flex-wrap">
+              <button
+                onClick={() => setShowShareModal(true)}
+                className="btn-secondary flex items-center gap-1 text-sm cursor-pointer"
+                id="share-book-btn"
+              >
+                <HiOutlineShare /> Share
+              </button>
               <Link
                 to={`/books/${book._id}/edit`}
                 className="btn-secondary flex items-center gap-1 text-sm no-underline"
@@ -194,6 +204,14 @@ const BookView = () => {
           onPrev={entries.length > 1 ? handlePrevEntry : undefined}
           currentIndex={selectedEntryIndex}
           totalEntries={entries.length}
+        />
+      )}
+
+      {/* Share Modal */}
+      {showShareModal && book && (
+        <ShareModal
+          book={book}
+          onClose={() => setShowShareModal(false)}
         />
       )}
     </div>

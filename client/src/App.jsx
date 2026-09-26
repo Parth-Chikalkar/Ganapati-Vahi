@@ -16,74 +16,86 @@ import BookView from './pages/BookView';
 import AddEntry from './pages/AddEntry';
 import EditEntry from './pages/EditEntry';
 import Profile from './pages/Profile';
+import SharedBookView from './pages/SharedBookView';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="flex flex-col min-h-screen relative overflow-hidden">
-          <Navbar />
-          <main className="flex-1">
-            <Routes>
-              {/* Public routes */}
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/books/:id" element={<BookView />} />
+        <Routes>
+          {/* Shared book route — standalone layout (own header/footer) */}
+          <Route path="/shared/book/:shareId" element={<SharedBookView />} />
 
-              {/* Protected routes */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/create-book"
-                element={
-                  <ProtectedRoute>
-                    <CreateBook />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/books/:id/edit"
-                element={
-                  <ProtectedRoute>
-                    <EditBook />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/books/:bookId/add-entry"
-                element={
-                  <ProtectedRoute>
-                    <AddEntry />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/entries/:id/edit"
-                element={
-                  <ProtectedRoute>
-                    <EditEntry />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
+          {/* All other routes — wrapped with Navbar + Footer */}
+          <Route
+            path="*"
+            element={
+              <div className="flex flex-col min-h-screen relative overflow-hidden">
+                <Navbar />
+                <main className="flex-1">
+                  <Routes>
+                    {/* Public routes */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/books/:id" element={<BookView />} />
+
+                    {/* Protected routes */}
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <ProtectedRoute>
+                          <Dashboard />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/create-book"
+                      element={
+                        <ProtectedRoute>
+                          <CreateBook />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/books/:id/edit"
+                      element={
+                        <ProtectedRoute>
+                          <EditBook />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/books/:bookId/add-entry"
+                      element={
+                        <ProtectedRoute>
+                          <AddEntry />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/entries/:id/edit"
+                      element={
+                        <ProtectedRoute>
+                          <EditEntry />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/profile"
+                      element={
+                        <ProtectedRoute>
+                          <Profile />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Routes>
+                </main>
+                <Footer />
+              </div>
+            }
+          />
+        </Routes>
 
         {/* Toast notifications */}
         <Toaster
