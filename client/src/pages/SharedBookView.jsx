@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import API from '../api/axios';
 import EntryModal from '../components/EntryModal';
+import Favicon from '../assets/Favicon.png';
 import {
   HiOutlineGlobeAlt,
   HiOutlineCalendar,
@@ -98,8 +99,12 @@ const SharedBookView = () => {
       <div className="shared-header bg-paper-dark/90 backdrop-blur-sm border-b-2 border-gold sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-14">
-            <Link to="/" className="flex items-center gap-2 no-underline">
-              <GiElephant className="text-2xl text-maroon" />
+            <Link to="/" className="flex items-center gap-2.5 no-underline">
+              <img
+                src={Favicon}
+                alt="Ganapati Vahi Logo"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-gold shadow-sm"
+              />
               <span className="font-heading text-xl sm:text-2xl text-maroon">
                 गणपती वही
               </span>

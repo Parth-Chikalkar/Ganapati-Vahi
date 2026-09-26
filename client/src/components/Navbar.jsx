@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { HiMenu, HiX } from 'react-icons/hi';
-import { GiElephant } from 'react-icons/gi';
+import Favicon from '../assets/Favicon.png';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -20,8 +20,12 @@ const Navbar = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 no-underline">
-            <GiElephant className="text-3xl text-maroon" />
+          <Link to="/" className="flex items-center gap-2.5 no-underline">
+            <img
+              src={Favicon}
+              alt="Ganapati Vahi Logo"
+              className="w-9 h-9 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-gold shadow-sm"
+            />
             <span className="font-heading text-2xl sm:text-3xl font-bold text-maroon">
               गणपती वही
             </span>
@@ -78,10 +82,9 @@ const Navbar = () => {
         </div>
 
         {/* Mobile menu */}
-        <div 
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            mobileOpen ? 'max-h-96 opacity-100 pb-4' : 'max-h-0 opacity-0 pb-0'
-          }`}
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${mobileOpen ? 'max-h-96 opacity-100 pb-4' : 'max-h-0 opacity-0 pb-0'
+            }`}
         >
           <div className="flex flex-col gap-3 pt-2">
             <Link
