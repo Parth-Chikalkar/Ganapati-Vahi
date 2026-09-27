@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   HiX,
   HiChevronLeft,
@@ -100,8 +101,8 @@ const EntryModal = ({
 
   const videoData = getEmbedVideoUrl(entry.videoUrl);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-maroon-dark/85 backdrop-blur-md animate-fade-in overflow-hidden">
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 md:p-6 bg-maroon-dark/85 backdrop-blur-md animate-fade-in overflow-hidden">
       {/* Background overlay click to close */}
       <div
         className="absolute inset-0"
@@ -127,28 +128,6 @@ const EntryModal = ({
           <HiX className="text-lg sm:text-xl" />
         </button>
 
-        {/* Previous Navigation Button (Desktop Floating) */}
-        {onPrev && (
-          <button
-            onClick={onPrev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-40 bg-paper/90 text-maroon hover:bg-maroon hover:text-gold p-2.5 rounded-full border border-gold shadow-lg transition-all hidden md:flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95"
-            title="Previous entry (Left Arrow)"
-          >
-            <HiChevronLeft className="text-2xl" />
-          </button>
-        )}
-
-        {/* Next Navigation Button (Desktop Floating) */}
-        {onNext && (
-          <button
-            onClick={onNext}
-            className="absolute right-14 top-1/2 -translate-y-1/2 z-40 bg-paper/90 text-maroon hover:bg-maroon hover:text-gold p-2.5 rounded-full border border-gold shadow-lg transition-all hidden md:flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95"
-            title="Next entry (Right Arrow)"
-          >
-            <HiChevronRight className="text-2xl" />
-          </button>
-        )}
-
         {/* LEFT COLUMN: Image Display Area */}
         <div className="relative md:w-7/12 lg:w-3/5 bg-maroon-dark/95 flex items-center justify-center h-[38vh] sm:h-[45vh] md:h-auto min-h-[220px] md:min-h-[480px] md:max-h-[90vh] overflow-hidden group select-none">
           <img
@@ -157,21 +136,25 @@ const EntryModal = ({
             className="w-full h-full object-contain max-h-[38vh] sm:max-h-[45vh] md:max-h-[85vh] transition-transform duration-300"
           />
 
-          {/* Mobile Overlay Arrows for fast tapping on image */}
+          {/* Previous Navigation Button — on the image */}
           {onPrev && (
             <button
               onClick={onPrev}
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-black/50 text-gold p-1.5 rounded-full border border-gold/40 md:hidden active:scale-95"
+              className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-40 bg-black/50 hover:bg-maroon text-gold p-2 sm:p-2.5 rounded-full border border-gold/50 shadow-lg transition-all flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95"
+              title="Previous entry (Left Arrow)"
             >
-              <HiChevronLeft className="text-xl" />
+              <HiChevronLeft className="text-xl sm:text-2xl" />
             </button>
           )}
+
+          {/* Next Navigation Button — on the image */}
           {onNext && (
             <button
               onClick={onNext}
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-black/50 text-gold p-1.5 rounded-full border border-gold/40 md:hidden active:scale-95"
+              className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-40 bg-black/50 hover:bg-maroon text-gold p-2 sm:p-2.5 rounded-full border border-gold/50 shadow-lg transition-all flex items-center justify-center cursor-pointer hover:scale-110 active:scale-95"
+              title="Next entry (Right Arrow)"
             >
-              <HiChevronRight className="text-xl" />
+              <HiChevronRight className="text-xl sm:text-2xl" />
             </button>
           )}
 
@@ -291,26 +274,6 @@ const EntryModal = ({
 
           {/* Bottom Actions & Controls */}
           <div className="pt-3 sm:pt-4 border-t border-paper-aged flex flex-col gap-2.5 mt-auto">
-            {/* Mobile Navigation bar */}
-            {(onPrev || onNext) && (
-              <div className="flex items-center justify-between md:hidden gap-2 pb-1">
-                <button
-                  onClick={onPrev}
-                  disabled={!onPrev}
-                  className="flex-1 btn-secondary text-xs sm:text-sm py-1.5 px-2 flex items-center justify-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  <HiChevronLeft /> Previous
-                </button>
-                <button
-                  onClick={onNext}
-                  disabled={!onNext}
-                  className="flex-1 btn-secondary text-xs sm:text-sm py-1.5 px-2 flex items-center justify-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-                >
-                  Next <HiChevronRight />
-                </button>
-              </div>
-            )}
-
             {/* Owner controls: Edit / Delete & Full View */}
             <div className="flex items-center justify-between gap-2 flex-wrap">
               <button
@@ -350,7 +313,7 @@ const EntryModal = ({
       {/* Fullscreen High-Res Image Lightbox Modal */}
       {isFullscreenImage && (
         <div
-          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-3 sm:p-4 animate-fade-in"
+          className="fixed inset-0 z-[10000] bg-black/95 flex items-center justify-center p-3 sm:p-4 animate-fade-in"
           onClick={() => setIsFullscreenImage(false)}
         >
           <button
@@ -376,6 +339,8 @@ const EntryModal = ({
       )}
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 export default EntryModal;

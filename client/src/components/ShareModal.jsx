@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import API from '../api/axios';
 import {
   HiX,
@@ -105,8 +106,8 @@ const ShareModal = ({ book, onClose }) => {
     (book.entries && book.entries[0]?.imageUrl) ||
     '';
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-maroon-dark/80 backdrop-blur-md animate-fade-in">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-maroon-dark/80 backdrop-blur-md animate-fade-in">
       {/* Backdrop click to close */}
       <div className="absolute inset-0" onClick={onClose} />
 
@@ -296,7 +297,8 @@ const ShareModal = ({ book, onClose }) => {
         {/* Decorative bottom */}
         <div className="share-modal-footer h-1.5 bg-gradient-to-r from-gold/40 via-saffron/60 to-gold/40" />
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
