@@ -9,6 +9,7 @@ import EntryModal from './EntryModal';
 
 const EntryCard = ({ entry, isOwner, onEdit, onDelete, onClick }) => {
   const [showInternalModal, setShowInternalModal] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   const formattedDate = new Date(entry.createdAt).toLocaleDateString('en-IN', {
     day: 'numeric',
@@ -32,12 +33,25 @@ const EntryCard = ({ entry, isOwner, onEdit, onDelete, onClick }) => {
         title="Click to view full image and details"
       >
         {/* Image */}
-        <div className="relative overflow-hidden rounded-sm bg-maroon-dark/10">
+        <div className="relative overflow-hidden rounded-sm bg-maroon-dark/10 h-56">
+          {isImageLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-paper/30 backdrop-blur-sm z-10">
+              <div className="relative flex items-center justify-center">
+                {/* Decorative spinning ring */}
+                <div className="absolute w-14 h-14 rounded-full border-4 border-gold/30 border-t-gold animate-spin"></div>
+                {/* Center Om symbol */}
+                <span className="text-3xl text-maroon drop-shadow-md animate-pulse">ॐ</span>
+              </div>
+            </div>
+          )}
           <img
             src={entry.imageUrl}
             alt={entry.title}
-            className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
+            className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ${
+              isImageLoading ? 'opacity-0 blur-sm' : 'opacity-100 blur-0'
+            }`}
             loading="lazy"
+            onLoad={() => setIsImageLoading(false)}
           />
 
           {/* Hover zoom overlay indicator */}
