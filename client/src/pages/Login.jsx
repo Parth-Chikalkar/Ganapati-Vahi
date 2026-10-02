@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useAdminAuth } from '../context/AdminAuthContext';
 import toast from 'react-hot-toast';
 import { GiElephant } from 'react-icons/gi';
 
@@ -9,11 +10,12 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const { user, login } = useAuth();
+  const { admin, adminLogin } = useAdminAuth();
   const navigate = useNavigate();
 
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  // Already logged in — redirect appropriately
+  if (admin) return <Navigate to="/admin" replace />;
+  if (user) return <Navigate to="/dashboard" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,11 +26,22 @@ const Login = () => {
 
     setSubmitting(true);
     try {
+      // 1. First attempt: try admin credentials silently
+      try {
+        await adminLogin(email, password);
+        toast.success('Welcome, Admin 🙏');
+        navigate('/admin');
+        return; // Stop here — it's an admin
+      } catch {
+        // Not an admin — fall through to regular user login
+      }
+
+      // 2. Second attempt: regular user login
       await login(email, password);
       toast.success('Welcome back! 🙏');
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed');
+      toast.error(error.response?.data?.message || 'Invalid email or password');
     } finally {
       setSubmitting(false);
     }

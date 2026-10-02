@@ -1,9 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { AdminAuthProvider } from './context/AdminAuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminProtectedRoute from './components/admin/AdminProtectedRoute';
 
 // Pages
 import Home from './pages/Home';
@@ -18,105 +20,140 @@ import EditEntry from './pages/EditEntry';
 import Profile from './pages/Profile';
 import SharedBookView from './pages/SharedBookView';
 
+// Admin Pages
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminBooks from './pages/admin/AdminBooks';
+import AdminReports from './pages/admin/AdminReports';
+import AdminAdmins from './pages/admin/AdminAdmins';
+import AdminLogs from './pages/admin/AdminLogs';
+
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <Routes>
-          {/* Shared book route — standalone layout (own header/footer) */}
-          <Route path="/shared/book/:shareId" element={<SharedBookView />} />
+      <AdminAuthProvider>
+        <AuthProvider>
+          <Routes>
+            {/* ── Shared book route — standalone layout ── */}
+            <Route path="/shared/book/:shareId" element={<SharedBookView />} />
 
-          {/* All other routes — wrapped with Navbar + Footer */}
-          <Route
-            path="*"
-            element={
-              <div className="flex flex-col min-h-screen relative overflow-hidden">
-                <Navbar />
-                <main className="flex-1">
-                  <Routes>
-                    {/* Public routes */}
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/signup" element={<Signup />} />
-                    <Route path="/books/:id" element={<BookView />} />
+            {/* ── Admin routes — no separate login; access via /login ── */}
+            <Route
+              path="/admin"
+              element={
+                <AdminProtectedRoute>
+                  <AdminLayout />
+                </AdminProtectedRoute>
+              }
+            >
+              <Route index element={<AdminDashboard />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="books" element={<AdminBooks />} />
+              <Route path="reports" element={<AdminReports />} />
+              <Route path="logs" element={<AdminLogs />} />
+              <Route
+                path="admins"
+                element={
+                  <AdminProtectedRoute superAdminOnly>
+                    <AdminAdmins />
+                  </AdminProtectedRoute>
+                }
+              />
+            </Route>
 
-                    {/* Protected routes */}
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <ProtectedRoute>
-                          <Dashboard />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/create-book"
-                      element={
-                        <ProtectedRoute>
-                          <CreateBook />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/books/:id/edit"
-                      element={
-                        <ProtectedRoute>
-                          <EditBook />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/books/:bookId/add-entry"
-                      element={
-                        <ProtectedRoute>
-                          <AddEntry />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/entries/:id/edit"
-                      element={
-                        <ProtectedRoute>
-                          <EditEntry />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/profile"
-                      element={
-                        <ProtectedRoute>
-                          <Profile />
-                        </ProtectedRoute>
-                      }
-                    />
-                  </Routes>
-                </main>
-                <Footer />
-              </div>
-            }
+            {/* ── All other user routes — wrapped with Navbar + Footer ── */}
+            <Route
+              path="*"
+              element={
+                <div className="flex flex-col min-h-screen relative overflow-hidden">
+                  <Navbar />
+                  <main className="flex-1">
+                    <Routes>
+                      {/* Public routes */}
+                      <Route path="/" element={<Home />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/signup" element={<Signup />} />
+                      <Route path="/books/:id" element={<BookView />} />
+
+                      {/* Protected routes */}
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <ProtectedRoute>
+                            <Dashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/create-book"
+                        element={
+                          <ProtectedRoute>
+                            <CreateBook />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/books/:id/edit"
+                        element={
+                          <ProtectedRoute>
+                            <EditBook />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/books/:bookId/add-entry"
+                        element={
+                          <ProtectedRoute>
+                            <AddEntry />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/entries/:id/edit"
+                        element={
+                          <ProtectedRoute>
+                            <EditEntry />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route
+                        path="/profile"
+                        element={
+                          <ProtectedRoute>
+                            <Profile />
+                          </ProtectedRoute>
+                        }
+                      />
+                    </Routes>
+                  </main>
+                  <Footer />
+                </div>
+              }
+            />
+          </Routes>
+
+          {/* Toast notifications */}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: '#fff',
+                color: '#3c2415',
+                border: '1px solid #e8dcc8',
+                fontFamily: 'Inter, sans-serif',
+              },
+              success: {
+                iconTheme: { primary: '#e85d04', secondary: '#fff' },
+              },
+              error: {
+                iconTheme: { primary: '#dc2f02', secondary: '#fff' },
+              },
+            }}
           />
-        </Routes>
-
-        {/* Toast notifications */}
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#fff',
-              color: '#3c2415',
-              border: '1px solid #e8dcc8',
-              fontFamily: 'Inter, sans-serif',
-            },
-            success: {
-              iconTheme: { primary: '#e85d04', secondary: '#fff' },
-            },
-            error: {
-              iconTheme: { primary: '#dc2f02', secondary: '#fff' },
-            },
-          }}
-        />
-      </AuthProvider>
+        </AuthProvider>
+      </AdminAuthProvider>
     </Router>
   );
 }

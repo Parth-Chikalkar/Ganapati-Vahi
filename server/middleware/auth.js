@@ -18,6 +18,17 @@ const auth = async (req, res, next) => {
       return res.status(401).json({ message: 'Not authorized, user not found' });
     }
 
+    if (req.user.status === 'suspended') {
+      return res.status(403).json({ message: 'Your account has been suspended. Please contact support.' });
+    }
+
+    if (req.user.status === 'blocked') {
+      return res.status(403).json({ message: 'Your account has been blocked. Please contact support.' });
+    }
+
+    // Update lastActivity timestamp (non-blocking)
+    User.findByIdAndUpdate(req.user._id, { lastActivity: new Date() }).catch(() => {});
+
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Not authorized, token invalid' });
