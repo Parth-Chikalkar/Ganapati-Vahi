@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
+import Favicon from '../../assets/Favicon.png';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 const navItems = [
@@ -60,10 +61,10 @@ const AdminSidebar = ({ isOpen, onClose }) => {
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-5 py-5" style={{ borderBottom: '1px solid rgba(212,175,55,0.1)' }}>
-          <span className="text-3xl">ॐ</span>
+          <img src={Favicon} alt="Ganapati Vahi Logo" className="w-9 h-9 rounded-full object-cover border border-amber-500/30 shadow-sm" />
           <div>
             <p className="font-bold text-sm leading-tight" style={{ color: '#d4af37', fontFamily: 'serif' }}>
-              Bappaachi Vahi
+              Ganapati Vahi
             </p>
             <p className="text-xs" style={{ color: '#8d6e63' }}>Admin Panel</p>
           </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import Favicon from '../../assets/Favicon.png';
 import AdminAPI from '../../api/adminAxios';
 import ConfirmModal from '../../components/admin/ConfirmModal';
 import toast from 'react-hot-toast';
@@ -174,7 +175,7 @@ const AdminUsers = () => {
       {loading ? (
         <div className="flex items-center justify-center py-20 text-center rounded-xl" style={cardBg}>
           <div>
-            <div className="text-3xl animate-pulse mb-2">ॐ</div>
+            <img src={Favicon} alt="Loading" className="w-9 h-9 rounded-full object-cover animate-pulse mx-auto mb-2 border border-amber-500/30" />
             <p style={{ color: '#8d6e63', fontSize: '0.875rem' }}>Loading users...</p>
           </div>
         </div>

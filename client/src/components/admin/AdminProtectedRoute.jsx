@@ -1,4 +1,5 @@
 import { Navigate } from 'react-router-dom';
+import Favicon from '../../assets/Favicon.png';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 
 const AdminProtectedRoute = ({ children, superAdminOnly = false }) => {
@@ -8,7 +9,7 @@ const AdminProtectedRoute = ({ children, superAdminOnly = false }) => {
     return (
       <div className="flex items-center justify-center min-h-screen" style={{ background: '#1a0a0a' }}>
         <div className="text-center">
-          <div className="text-5xl mb-4 animate-pulse">ॐ</div>
+          <img src={Favicon} alt="Loading" className="w-14 h-14 rounded-full object-cover animate-pulse mx-auto mb-4 border border-amber-500/30" />
           <p style={{ color: '#d4af37', fontFamily: 'serif' }}>Loading admin panel...</p>
         </div>
       </div>
