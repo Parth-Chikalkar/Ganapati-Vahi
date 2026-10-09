@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import Favicon from '../../assets/Favicon.png';
 import AdminAPI from '../../api/adminAxios';
 import toast from 'react-hot-toast';
 
@@ -91,7 +92,7 @@ const AdminReports = () => {
 
       {loading ? (
         <div className="flex items-center justify-center py-20 rounded-xl" style={cardBg}>
-          <div className="text-center"><div className="text-3xl animate-pulse mb-2">ॐ</div><p style={{ color: '#8d6e63', fontSize: '0.875rem' }}>Loading...</p></div>
+          <div className="text-center"><img src={Favicon} alt="Loading" className="w-9 h-9 rounded-full object-cover animate-pulse mx-auto mb-2 border border-amber-500/30" /><p style={{ color: '#8d6e63', fontSize: '0.875rem' }}>Loading...</p></div>
         </div>
       ) : reports.length === 0 ? (
         <div className="flex items-center justify-center py-20 rounded-xl" style={cardBg}>

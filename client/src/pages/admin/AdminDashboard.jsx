@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Favicon from '../../assets/Favicon.png';
 import AdminAPI from '../../api/adminAxios';
 import StatCard from '../../components/admin/StatCard';
 import toast from 'react-hot-toast';
@@ -73,7 +74,7 @@ const AdminDashboard = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="text-4xl animate-pulse mb-3">ॐ</div>
+          <img src={Favicon} alt="Loading" className="w-12 h-12 rounded-full object-cover animate-pulse mx-auto mb-3 border border-amber-500/30" />
           <p style={{ color: '#8d6e63' }}>Loading statistics...</p>
         </div>
       </div>
@@ -97,7 +98,7 @@ const AdminDashboard = () => {
           Dashboard Overview
         </h1>
         <p className="text-sm mt-0.5" style={{ color: '#8d6e63' }}>
-          Platform statistics — Bappaachi Vahi
+          Platform statistics — Ganapati Vahi
         </p>
       </div>
 

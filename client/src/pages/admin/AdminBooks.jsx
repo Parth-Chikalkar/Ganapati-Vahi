@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import Favicon from '../../assets/Favicon.png';
 import AdminAPI from '../../api/adminAxios';
 import ConfirmModal from '../../components/admin/ConfirmModal';
 import toast from 'react-hot-toast';
@@ -149,7 +150,7 @@ const AdminBooks = () => {
       {/* Loading / empty */}
       {loading ? (
         <div className="flex items-center justify-center py-20 rounded-xl" style={cardBg}>
-          <div className="text-center"><div className="text-3xl animate-pulse mb-2">ॐ</div><p style={{ color: '#8d6e63', fontSize: '0.875rem' }}>Loading...</p></div>
+          <div className="text-center"><img src={Favicon} alt="Loading" className="w-9 h-9 rounded-full object-cover animate-pulse mx-auto mb-2 border border-amber-500/30" /><p style={{ color: '#8d6e63', fontSize: '0.875rem' }}>Loading...</p></div>
         </div>
       ) : (tab === 'books' ? books : entries).length === 0 ? (
         <div className="flex items-center justify-center py-20 rounded-xl" style={cardBg}>
@@ -319,7 +320,7 @@ const AdminBooks = () => {
             </div>
             <div className="overflow-y-auto p-4">
               {previewLoading ? (
-                <div className="text-center py-8"><div className="text-3xl animate-pulse">ॐ</div></div>
+                <div className="text-center py-8"><img src={Favicon} alt="Loading" className="w-8 h-8 rounded-full object-cover animate-pulse mx-auto border border-amber-500/30" /></div>
               ) : previewEntries.length === 0 ? (
                 <p className="text-center py-8 text-sm" style={{ color: '#5d4037' }}>No entries in this book</p>
               ) : (

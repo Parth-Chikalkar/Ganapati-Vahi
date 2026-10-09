@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import Favicon from '../../assets/Favicon.png';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 
 const AdminLayout = () => {
@@ -33,9 +34,9 @@ const AdminLayout = () => {
           </button>
 
           <div className="flex items-center gap-2 lg:ml-0 ml-2">
-            <span className="text-xl">ॐ</span>
+            <img src={Favicon} alt="Ganapati Vahi Logo" className="w-6 h-6 rounded-full object-cover border border-amber-500/30" />
             <span className="text-sm font-medium" style={{ color: '#8d6e63', fontFamily: 'serif' }}>
-              Bappaachi Vahi Admin
+              Ganapati Vahi Admin
             </span>
           </div>
 
