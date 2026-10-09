@@ -2,10 +2,9 @@
   "version": 2,
   "buildCommand": "cd client && npm install && npm run build",
   "outputDirectory": "client/dist",
-  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!assets|favicon\.ico|robots\.txt|sitemap\.xml|.*\..*).*)",
       "destination": "/index.html"
     }
   ],
