@@ -19,6 +19,14 @@ const reasonLabels = {
   other: 'Other',
 };
 
+// Build a link to the public page for the reported target
+const getTargetUrl = (r) => {
+  const base = import.meta.env.VITE_APP_URL || window.location.origin;
+  if (r.targetType === 'book') return `${base}/books/${r.targetId}`;
+  if (r.targetType === 'entry') return `${base}/books/${r.targetId}`; // entry lives inside a book
+  return null;
+};
+
 const cardBg = { background: 'rgba(20,5,5,0.8)', border: '1px solid rgba(212,175,55,0.15)' };
 
 const AdminReports = () => {
@@ -106,7 +114,7 @@ const AdminReports = () => {
               <table className="w-full">
                 <thead>
                   <tr>
-                    {['Reporter', 'Type', 'Reason', 'Description', 'Status', 'Filed', 'Action'].map((h) => (
+                    {['Reporter', 'Type', 'Reason', 'Description', 'Status', 'Filed', 'View', 'Action'].map((h) => (
                       <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#8d6e63', borderBottom: '1px solid rgba(212,175,55,0.15)' }}>{h}</th>
                     ))}
                   </tr>
@@ -133,6 +141,19 @@ const AdminReports = () => {
                           style={{ background: statusColors[r.status]?.bg, color: statusColors[r.status]?.color }}>{r.status}</span>
                       </td>
                       <td style={{ padding: '11px 14px', fontSize: '0.8rem', color: '#c9a87c' }}>{new Date(r.createdAt).toLocaleDateString('en-IN')}</td>
+                      <td style={{ padding: '11px 14px' }}>
+                        {getTargetUrl(r) ? (
+                          <a
+                            href={getTargetUrl(r)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs px-2.5 py-1 rounded cursor-pointer whitespace-nowrap no-underline"
+                            style={{ background: 'rgba(212,175,55,0.1)', color: '#d4af37', border: '1px solid rgba(212,175,55,0.25)' }}
+                          >
+                            View ↗
+                          </a>
+                        ) : <span style={{ color: '#5d4037', fontSize: '0.75rem' }}>—</span>}
+                      </td>
                       <td style={{ padding: '11px 14px' }}>
                         {r.status === 'pending' ? (
                           <button onClick={() => { setReviewModal(r); setReviewNote(''); }}
@@ -171,13 +192,26 @@ const AdminReports = () => {
                 {r.description && <p className="text-xs" style={{ color: '#8d6e63' }}>{r.description}</p>}
                 <div className="flex items-center justify-between">
                   <span className="text-xs" style={{ color: '#5d4037' }}>{new Date(r.createdAt).toLocaleDateString('en-IN')}</span>
-                  {r.status === 'pending' && (
-                    <button onClick={() => { setReviewModal(r); setReviewNote(''); }}
-                      className="text-xs px-3 py-1.5 rounded cursor-pointer"
-                      style={{ background: 'rgba(96,165,250,0.1)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.25)' }}>
-                      Review
-                    </button>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {getTargetUrl(r) && (
+                      <a
+                        href={getTargetUrl(r)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs px-2.5 py-1.5 rounded cursor-pointer no-underline"
+                        style={{ background: 'rgba(212,175,55,0.1)', color: '#d4af37', border: '1px solid rgba(212,175,55,0.25)' }}
+                      >
+                        View ↗
+                      </a>
+                    )}
+                    {r.status === 'pending' && (
+                      <button onClick={() => { setReviewModal(r); setReviewNote(''); }}
+                        className="text-xs px-3 py-1.5 rounded cursor-pointer"
+                        style={{ background: 'rgba(96,165,250,0.1)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.25)' }}>
+                        Review
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

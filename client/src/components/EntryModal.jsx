@@ -11,7 +11,9 @@ import {
   HiOutlineArrowsExpand,
   HiOutlineExternalLink,
   HiOutlinePlay,
+  HiOutlineFlag,
 } from 'react-icons/hi';
+import ReportModal from './ReportModal';
 
 const getEmbedVideoUrl = (url) => {
   if (!url) return null;
@@ -46,6 +48,7 @@ const EntryModal = ({
 }) => {
   const [isFullscreenImage, setIsFullscreenImage] = useState(false);
   const [touchStartX, setTouchStartX] = useState(null);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   // Keyboard navigation & escape key listener
   useEffect(() => {
@@ -283,7 +286,7 @@ const EntryModal = ({
                 <HiOutlineArrowsExpand /> Full View
               </button>
 
-              {isOwner && (
+              {isOwner ? (
                 <div className="flex items-center gap-2 ml-auto">
                   <button
                     onClick={() => {
@@ -304,6 +307,15 @@ const EntryModal = ({
                     <HiOutlineTrash /> Delete
                   </button>
                 </div>
+              ) : (
+                <button
+                  onClick={() => setShowReportModal(true)}
+                  className="ml-auto flex items-center gap-1 text-xs font-subheading text-ink-muted hover:text-red-700 border border-paper-aged hover:border-red-300 bg-transparent px-2.5 py-1.5 rounded-lg transition-colors cursor-pointer"
+                  id="report-entry-btn"
+                  title="Report this entry"
+                >
+                  <HiOutlineFlag /> Report
+                </button>
               )}
             </div>
           </div>
@@ -336,6 +348,16 @@ const EntryModal = ({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <ReportModal
+          targetType="entry"
+          targetId={entry._id}
+          targetLabel={entry.title}
+          onClose={() => setShowReportModal(false)}
+        />
       )}
     </div>
   );

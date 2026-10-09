@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import EntryCard from '../components/EntryCard';
 import EntryModal from '../components/EntryModal';
 import ShareModal from '../components/ShareModal';
+import ReportModal from '../components/ReportModal';
 import toast from 'react-hot-toast';
 import {
   HiOutlinePlusCircle,
@@ -12,6 +13,7 @@ import {
   HiOutlineGlobeAlt,
   HiOutlineLockClosed,
   HiOutlineShare,
+  HiOutlineFlag,
   HiArrowLeft,
 } from 'react-icons/hi';
 
@@ -24,6 +26,7 @@ const BookView = () => {
   const [loading, setLoading] = useState(true);
   const [selectedEntryIndex, setSelectedEntryIndex] = useState(null);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const isOwner = user && book && user._id === (book.owner?._id || book.owner);
 
@@ -133,7 +136,7 @@ const BookView = () => {
             </p>
           </div>
 
-          {isOwner && (
+          {isOwner ? (
             <div className="flex gap-2 flex-shrink-0 flex-wrap">
               <button
                 onClick={() => setShowShareModal(true)}
@@ -155,6 +158,15 @@ const BookView = () => {
                 <HiOutlinePlusCircle /> Add Entry
               </Link>
             </div>
+          ) : (
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="flex items-center gap-1.5 text-xs font-subheading text-ink-muted hover:text-red-700 border border-paper-aged hover:border-red-300 bg-transparent px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+              id="report-book-btn"
+              title="Report this book"
+            >
+              <HiOutlineFlag /> Report
+            </button>
           )}
         </div>
       </div>
@@ -212,6 +224,16 @@ const BookView = () => {
         <ShareModal
           book={book}
           onClose={() => setShowShareModal(false)}
+        />
+      )}
+
+      {/* Report Modal */}
+      {showReportModal && book && (
+        <ReportModal
+          targetType="book"
+          targetId={book._id}
+          targetLabel={book.title}
+          onClose={() => setShowReportModal(false)}
         />
       )}
     </div>
