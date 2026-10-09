@@ -1,6 +1,8 @@
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Favicon from '../../assets/Favicon.png';
 import { useAdminAuth } from '../../context/AdminAuthContext';
+import AdminAPI from '../../api/adminAxios';
 
 const navItems = [
   { to: '/admin', icon: '📊', label: 'Dashboard', exact: true },
@@ -17,6 +19,13 @@ const superAdminItems = [
 const AdminSidebar = ({ isOpen, onClose }) => {
   const { admin, adminLogout } = useAdminAuth();
   const navigate = useNavigate();
+  const [pendingReports, setPendingReports] = useState(0);
+
+  useEffect(() => {
+    AdminAPI.get('/reports?status=pending&limit=1')
+      .then(({ data }) => setPendingReports(data.total || 0))
+      .catch(() => {});
+  }, []);
 
   const handleLogout = () => {
     adminLogout();
@@ -110,7 +119,15 @@ const AdminSidebar = ({ isOpen, onClose }) => {
                 onClick={onClose}
               >
                 <span>{item.icon}</span>
-                <span>{item.label}</span>
+                <span className="flex-1">{item.label}</span>
+                {item.to === '/admin/reports' && pendingReports > 0 && (
+                  <span
+                    className="text-xs font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                    style={{ background: '#ef4444', color: '#fff', fontSize: '0.65rem', minWidth: '18px', textAlign: 'center' }}
+                  >
+                    {pendingReports > 99 ? '99+' : pendingReports}
+                  </span>
+                )}
               </NavLink>
             ))}
           </div>
